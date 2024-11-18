@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>To Do List</title>
+  <style>
+    #container {
+      margin-left:100px;
+      width: 400px;
+      height: auto;
+      min-height: 100px;
+      max-height: 400px;
+      overflow-y: auto;
+      border-radius: 10px;
+      border: 2px solid black;
+    }
+    body{
+      text-align: center;
+      
+    }
+    #display {
+      width: 200px;
+      height: 20px;
+      margin-top: 20px;
+      margin-left: 10px;
+      border: 1px solid black;
+      text-align: center;
+      text-transform: capitalize;
+    }
+    #date {
+      border: 1px solid black;
+      width: 80px;
+      font-size: 13px;
+    }
+    #Button {
+      width: 50px;
+      height: 20px;
+      font-size: 13px;
+    }
+    #list {
+      list-style-type: none;
+    }
+    .del {
+      float: right;
+    }
+    li {
+      display: flex;
+      justify-content: space-between;
+      background-color: #f9f9f9;
+      padding: 10px;
+      margin-bottom: 10px;
+      margin-right: 10px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+  <h1>To Do List</h1>
+  <div id="container">
+    <input type="text" id="display" placeholder="Enter your task">
+    <input type="date" id="date" value='2024-01-01'>
+    <button onclick="Add()" id="Button">ADD</button>
+    <ul id="list"></ul>
+  </div>
+
+  <script>
+    let display = document.getElementById('display');
+    let date = document.getElementById('date');
+    let list = document.getElementById('list');
+    let arr = JSON.parse(localStorage.getItem('list')) || [];
+    let darr = JSON.parse(localStorage.getItem('time')) || [];
+
+    function Task() {
+      if (display.value.trim() === "") {
+        return alert("Enter valid value");
+      } else {
+        let li = document.createElement('li');
+        let displayData = display.value;
+        let dateData = date.value;
+        let para = document.createElement('p');
+        para.textContent = dateData;
+
+        li.textContent = `${displayData}`;
+        list.appendChild(li);
+        li.className = 'li';
+
+        let del = document.createElement('button');
+        del.textContent = "DELETE";
+        del.onclick = function () {
+          let index = arr.indexOf(displayData);
+
+          if (index > -1) {
+            arr.splice(index, 1);
+            darr.splice(index, 1);
+          }
+
+          list.removeChild(li);
+
+          localStorage.setItem("list", JSON.stringify(arr));
+          localStorage.setItem("time", JSON.stringify(darr));
+        };
+        del.className = 'del';
+        li.appendChild(para);
+        li.appendChild(del);
+
+        arr.push(displayData);
+        darr.push(dateData);
+
+        localStorage.setItem('list', JSON.stringify(arr));
+        localStorage.setItem('time', JSON.stringify(darr));
+      }
+    }
+
+    function Add() {
+      Task();
+      display.value = "";
+    }
+
+    function onWindowLoad() {
+      for (let i = 0; i < arr.length; i++) {
+        let li = document.createElement('li');
+        let displayData = arr[i];
+        let dateData = darr[i];
+        let para = document.createElement('p');
+        para.textContent = dateData;
+
+        li.textContent = `${displayData}`;
+        list.appendChild(li);
+        li.className = 'li';
+
+        let del = document.createElement('button');
+        del.textContent = "DELETE";
+        del.onclick = function () {
+          let index = arr.indexOf(displayData);
+
+          if (index > -1) {
+            arr.splice(index, 1);
+            darr.splice(index, 1);
+          }
+
+          list.removeChild(li);
+
+          localStorage.setItem("list", JSON.stringify(arr));
+          localStorage.setItem("time", JSON.stringify(darr));
+        };
+        del.className = 'del';
+        li.appendChild(para);
+        li.appendChild(del);
+      }
+    }
+
+    onWindowLoad();
+
+    document.addEventListener('keydown', function (event) {
+      const key = event.key;
+      if (key === 'Enter') {
+        Add();
+      }
+    });
+  </script>
+</body>
+</html>
